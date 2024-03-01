@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listviewapp/data_table.dart';
+import 'package:listviewapp/login.dart';
 import 'package:listviewapp/table_view.dart';
 import 'package:listviewapp/wrap_widget.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
      debugShowCheckedModeBanner: false,
-      home: WrapWidget(),
+      home: LoginScreen(),
     );
   }
 }
