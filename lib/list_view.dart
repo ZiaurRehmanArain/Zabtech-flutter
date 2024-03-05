@@ -15,6 +15,7 @@ class ListViews extends StatelessWidget {
           Container(
             height: 100,
             child: ListView(
+              // physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               children: [
                 Container(
