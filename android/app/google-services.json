@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "421425924868",
+    "project_id": "ecomapp-cd132",
+    "storage_bucket": "ecomapp-cd132.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421425924868:android:5564ade48adcf3b8f5de51",
+        "android_client_info": {
+          "package_name": "com.example.database"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4YuMHA19jddbwU-9Xz1UI0aAUsHpvV6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421425924868:android:f9a43b0930a9a935f5de51",
+        "android_client_info": {
+          "package_name": "com.zia.database"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4YuMHA19jddbwU-9Xz1UI0aAUsHpvV6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
