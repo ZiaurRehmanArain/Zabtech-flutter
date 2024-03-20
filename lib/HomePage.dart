@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -10,15 +12,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
   CurrentGetData() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('users/${currentUser!.uid}').get();
+    final snapshot = await ref.child('users/${currentUser!.uid}').get()
+    ;
     if (snapshot.exists) {
-      print(snapshot.value);
+   print('sddasdasd   sdsd   ${snapshot.value}');
+
     } else {
       print('No data available.');
     }
+
   }
 
   @override

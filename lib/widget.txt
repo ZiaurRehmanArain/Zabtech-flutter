@@ -1,0 +1,26 @@
+ final snackBar = SnackBar(
+              content: Text('This is a snack bar'),
+              duration: Duration(seconds: 3), // Adjust the duration as needed
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+
+
+
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Alert'),
+                  content: Text('This is an alert dialog.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Close'),
+                    ),
+                  ],
+                );
+              },
+            );

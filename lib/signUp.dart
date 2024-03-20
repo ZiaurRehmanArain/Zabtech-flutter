@@ -14,18 +14,19 @@ class SignUpView extends StatelessWidget {
         .then((user) async {
       print('account createde');
 
-      DatabaseReference ref = FirebaseDatabase.instance.ref('users/${user.user!.uid}');
-    await  ref.set({
-        'uid':user.user!.uid,
-        "name":name.text,
-        "email":email.text,
-        'phone_number':phone.text
+      DatabaseReference ref =
+          FirebaseDatabase.instance.ref('users/${user.user!.uid}');
+      await ref.set({
+        'uid': user.user!.uid,
+        "name": name.text,
+        "email": email.text,
+        'phone_number': phone.text
       });
-      print(user.user!.email);
+      debugPrint(user.user!.email);
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginView()));
     }).catchError((e) {
-      print(e.toString());
+      debugPrint(e.toString());
     });
   }
 
@@ -39,40 +40,61 @@ class SignUpView extends StatelessWidget {
         appBar: AppBar(
           title: Text('Sign Up'),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Column(
-            children: [
-              TextField(
-                controller: name,
-                decoration: InputDecoration(hintText: 'Name'),
-              ),
-              TextField(
-                controller: email,
-                decoration: InputDecoration(hintText: 'Email'),
-              ),
-              TextField(
-                controller: password,
-                decoration: InputDecoration(hintText: 'Password'),
-              ),
-              TextField(
-                controller: phone,
-                decoration: InputDecoration(hintText: 'Phone number'),
-              ),
-              ElevatedButton(onPressed: () {}, child: Text('image Picker')),
-              ElevatedButton(
-                  onPressed: () {
-                    // print(email.text);
-                    createAcount(context);
-                  },
-                  child: Text('Sign Up')),
-              ElevatedButton(onPressed: () {
-                  Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LoginView()));
- 
-              }, child: Text('Login ')),
-
-            ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Column(
+              children: [
+                TextField(
+                  controller: name,
+                  decoration: InputDecoration(hintText: 'Name'),
+                ),
+                TextField(
+                  controller: email,
+                  decoration: InputDecoration(hintText: 'Email'),
+                ),
+                TextField(
+                  controller: password,
+                  decoration: InputDecoration(hintText: 'Password'),
+                ),
+                TextField(
+                  controller: phone,
+                  decoration: InputDecoration(hintText: 'Phone number'),
+                ),
+                Container(
+                            margin: EdgeInsets.all(10),
+                  height: 40,
+                  width: MediaQuery.of(context).size.width * .8,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  child: ElevatedButton(onPressed: () {}, child: Text('image Picker'))),
+                Container(
+                  margin: EdgeInsets.all(10),
+                  height: 40,
+                  width: MediaQuery.of(context).size.width * .8,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        // print(email.text);
+                        createAcount(context);
+                      },
+                      child: Text('Sign Up')),
+                ),
+                Row(
+                     mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Already have an account?"),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginView()));
+                        },
+                        child: Text('Login ')),
+                  ],
+                ),
+              ],
+            ),
           ),
         ));
   }
