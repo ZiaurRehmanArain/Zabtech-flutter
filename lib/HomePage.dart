@@ -12,19 +12,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
   CurrentGetData() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('users/${currentUser!.uid}').get()
-    ;
-    if (snapshot.exists) {
-   print('sddasdasd   sdsd   ${snapshot.value}');
-
-    } else {
-      print('No data available.');
-    }
-
+    await ref.child('users/${currentUser!.uid}').once().then((value) {
+      print(value.snapshot.value);
+    }).catchError((onError) {
+      print(onError);
+    });
+    // if (snapshot.exists) {
+    //   print('sddasdasd   sdsd   ${snapshot.value}');
+    //   //  var values = ;
+    //   //     setState(() {
+    //   //       _userName = values['name'];
+    //   //       _userImageURL = values['image'];
+    //   //     });
+    // } else {
+    //   print('No data available.');
+    // }
   }
 
   @override

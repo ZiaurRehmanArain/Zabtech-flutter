@@ -1,11 +1,20 @@
+import 'dart:io';
+
 import 'package:database/LoginView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-class SignUpView extends StatelessWidget {
+class SignUpView extends StatefulWidget {
   SignUpView({super.key});
 
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
   createAcount(BuildContext context) async {
     final credential = FirebaseAuth.instance;
     credential
@@ -31,9 +40,69 @@ class SignUpView extends StatelessWidget {
   }
 
   TextEditingController email = TextEditingController();
+
   TextEditingController password = TextEditingController();
+
   TextEditingController name = TextEditingController();
+
   TextEditingController phone = TextEditingController();
+
+  late String imagePath = '', imageName;
+  bool loading = false;
+
+  cameraImagePicker() async {
+    final ImagePicker _picker = ImagePicker();
+
+    final _image = await _picker.pickImage(source: ImageSource.camera);
+    print(_image!.path);
+    setState(() {
+      imagePath = _image.path;
+      imageName = _image.name;
+    });
+  }
+
+  galleryImagePicker() async {
+    final ImagePicker _picker = ImagePicker();
+
+    final _image = await _picker.pickImage(source: ImageSource.gallery);
+    print(_image!.path);
+    setState(() {
+      imagePath = _image.path;
+      imageName = _image.name;
+    });
+  }
+
+  ImageUpload() async {
+    setState(() {
+      loading = true;
+    });
+    final _storage = FirebaseStorage.instance.ref();
+
+//     final reference = _storage.child("images/");
+    File file = File(imagePath);
+//     //Upload the file to firebase
+//     final uploadTask = await reference.putFile(file);
+//  setState(() {
+//       loading = false;
+//     });
+    final storageRef = FirebaseStorage.instance.ref();
+    final imagesRef = storageRef.child("images/$imageName");
+
+    await imagesRef.putFile(file).then((p)async {
+    var url=await  imagesRef.getDownloadURL();
+
+      print('image uploaded   $url');
+      setState(() {
+        loading = false;
+      });
+    }).catchError((onError) {
+      setState(() {
+        loading = false;
+      });
+      print(onError);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,17 +130,40 @@ class SignUpView extends StatelessWidget {
                   controller: phone,
                   decoration: InputDecoration(hintText: 'Phone number'),
                 ),
+                imagePath == '' || imagePath.isEmpty
+                    ? Text('no image')
+                    : Image.file(
+                        File(imagePath),
+                        width: 100,
+                      ),
                 Container(
-                            margin: EdgeInsets.all(10),
-                  height: 40,
-                  width: MediaQuery.of(context).size.width * .8,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                  child: ElevatedButton(onPressed: () {}, child: Text('image Picker'))),
+                    margin: EdgeInsets.all(10),
+                    height: 40,
+                    width: MediaQuery.of(context).size.width * .8,
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          cameraImagePicker();
+                        },
+                        child: Text('camera'))),
+                Container(
+                    margin: EdgeInsets.all(10),
+                    height: 40,
+                    width: MediaQuery.of(context).size.width * .8,
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          galleryImagePicker();
+                        },
+                        child: Text('Gallery'))),
                 Container(
                   margin: EdgeInsets.all(10),
                   height: 40,
                   width: MediaQuery.of(context).size.width * .8,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
                   child: ElevatedButton(
                       onPressed: () {
                         // print(email.text);
@@ -80,7 +172,7 @@ class SignUpView extends StatelessWidget {
                       child: Text('Sign Up')),
                 ),
                 Row(
-                     mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Already have an account?"),
                     TextButton(
@@ -93,6 +185,12 @@ class SignUpView extends StatelessWidget {
                         child: Text('Login ')),
                   ],
                 ),
+                ElevatedButton(
+                    onPressed: () {
+                      ImageUpload();
+                    },
+                    child:
+                        loading ? CircularProgressIndicator() : Text('uplaod'))
               ],
             ),
           ),
