@@ -29,7 +29,8 @@ class _SignUpViewState extends State<SignUpView> {
         'uid': user.user!.uid,
         "name": name.text,
         "email": email.text,
-        'phone_number': phone.text
+        'phone_number': phone.text,
+        'profileImage':imageUrl
       });
       debugPrint(user.user!.email);
       Navigator.push(
@@ -47,7 +48,7 @@ class _SignUpViewState extends State<SignUpView> {
 
   TextEditingController phone = TextEditingController();
 
-  late String imagePath = '', imageName;
+  late String imagePath = '', imageName, imageUrl;
   bool loading = false;
 
   cameraImagePicker() async {
@@ -76,23 +77,17 @@ class _SignUpViewState extends State<SignUpView> {
     setState(() {
       loading = true;
     });
-    final _storage = FirebaseStorage.instance.ref();
 
-//     final reference = _storage.child("images/");
     File file = File(imagePath);
-//     //Upload the file to firebase
-//     final uploadTask = await reference.putFile(file);
-//  setState(() {
-//       loading = false;
-//     });
+
     final storageRef = FirebaseStorage.instance.ref();
     final imagesRef = storageRef.child("images/$imageName");
 
-    await imagesRef.putFile(file).then((p)async {
-    var url=await  imagesRef.getDownloadURL();
-
-      print('image uploaded   $url');
+    await imagesRef.putFile(file).then((p) async {
+       imageUrl = await imagesRef.getDownloadURL();
+      print('image uploaded  $imageUrl');
       setState(() {
+        // imageUrl = url;
         loading = false;
       });
     }).catchError((onError) {
