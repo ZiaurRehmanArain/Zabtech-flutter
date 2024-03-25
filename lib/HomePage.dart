@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:database/LoginView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -59,39 +61,58 @@ class _HomePageState extends State<HomePage> {
   //   }
   // }
 
-  void _getUserProfile() async {
-    try {
-      User? user = _auth.currentUser;
-      if (user != null) {
-        DatabaseReference userRef =
-            _database.ref().child('users').child(user.uid);
-        DataSnapshot snapshot = await userRef.get();
-        if (snapshot.value != null && snapshot.value is Map) {
-          Map<String, dynamic> userData =
-              snapshot.value as Map<String, dynamic>;
-          setState(() {
-            _userName = userData['name'] ?? '';
-            _userEmail = userData['email'] ?? '';
-            // _userImageUrl = userData['imageUrl'] ?? '';
-          });
-          print(_userEmail);
-        }
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+  // void _getUserProfile() async {
+  //   try {
+  //     User? user = _auth.currentUser;
+  //     if (user != null) {
+  //       DatabaseReference userRef =
+  //           _database.ref().child('users').child(user.uid);
+  //       DataSnapshot snapshot = await userRef.get();
+  //       if (snapshot.value != null && snapshot.value is Map) {
+  //         Map<String, dynamic> userData =
+  //             snapshot.value as Map<String, dynamic>;
+  //         setState(() {
+  //           _userName = userData['name'] ?? '';
+  //           _userEmail = userData['email'] ?? '';
+  //           // _userImageUrl = userData['imageUrl'] ?? '';
+  //         });
+  //         print(_userEmail);
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     // CurrentGetData();
-    _getUserProfile();
+    // _getUserProfile();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("home Page"),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                final SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                prefs.setBool('islogin', false);
+                await FirebaseAuth.instance.signOut();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginView()));
+              },
+              icon: Icon(Icons.logout))
+        ],
+      ),
+      body: Column(
+        children: [],
+      ),
+    );
   }
 }

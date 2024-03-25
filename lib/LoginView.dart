@@ -1,12 +1,25 @@
 import 'package:database/HomePage.dart';
+import 'package:database/adminView.dart';
 import 'package:database/signUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   LoginView({super.key});
 
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  bool loading = false;
   createAcount(BuildContext context) async {
+    loading = true;
+    setState(() {});
+final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+
     // final credential = FirebaseAuth.instance;
     // credential
     //     .signInWithEmailAndPassword(
@@ -23,28 +36,44 @@ class LoginView extends StatelessWidget {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.text, password: password.text);
-      Navigator.push(
+          await prefs.setBool('islogin', true);
+          if(email.text.toString()=='zia@gmail.com'){
+             Navigator.push(
+          context, MaterialPageRoute(builder: (context) => AdminView()));
+          }else{
+ Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomePage()));
+          }
+     
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        
         print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-      
         debugPrint('Wrong password provided for that user.');
       }
-    }catch (err) {
+      setState(() {
+        loading = false;
+      });
+    } catch (err) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("err.toString()"),
         duration: Duration(seconds: 3), // Adjust the duration as needed
       ));
+      setState(() {
+        loading = false;
+      });
     }
   }
 
   TextEditingController email = TextEditingController();
+
   TextEditingController password = TextEditingController();
+  // var checkUser = FirebaseAuth.instance.currentUser!.uid;
+
   @override
   Widget build(BuildContext context) {
+    // print( 'check user  ${checkUser.isEmpty}');
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Login '),
@@ -75,7 +104,8 @@ class LoginView extends StatelessWidget {
                       // print(email.text);
                       createAcount(context);
                     },
-                    child: Text('Login'),
+                    child:
+                        loading ? CircularProgressIndicator() : Text('Login'),
                   ),
                 ),
                 Row(
