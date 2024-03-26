@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:database/adminView.dart';
 import 'package:database/firebase_options.dart';
 import 'package:database/signUp.dart';
 import 'package:database/splashScreen.dart';
@@ -45,7 +46,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      home: AdminView()
+      
+      // SplashScreen(),
     );
   }
 }
