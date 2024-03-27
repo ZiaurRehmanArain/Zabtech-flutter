@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:database/LoginView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -110,8 +111,28 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.logout))
         ],
       ),
-      body: Column(
-        children: [],
+      body: StreamBuilder(
+        stream: FirebaseDatabase.instance.ref("products").onValue,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          else{
+
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              itemCount: snapshot,
+              itemBuilder: (BuildContext context, int index) {
+                return ;
+              },
+            ),
+
+          }
+        },
       ),
     );
   }

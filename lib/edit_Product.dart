@@ -6,14 +6,20 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddCardView extends StatefulWidget {
-  AddCardView({super.key});
+class EditCardView extends StatefulWidget {
+  String uid, name, des, price;
+  EditCardView(
+      {super.key,
+      required this.name,
+      required this.des,
+      required this.price,
+      required this.uid});
 
   @override
-  State<AddCardView> createState() => _AddCardViewState();
+  State<EditCardView> createState() => _EditCardViewState();
 }
 
-class _AddCardViewState extends State<AddCardView> {
+class _EditCardViewState extends State<EditCardView> {
   TextEditingController name = TextEditingController();
 
   TextEditingController descrption = TextEditingController();
@@ -22,45 +28,50 @@ class _AddCardViewState extends State<AddCardView> {
 
   String? imagePath = "", imageName, downloadUrl;
   bool loading = false;
-  getImage() async {
-    final ImagePicker _picker = ImagePicker();
+  // getImage() async {
+  //   final ImagePicker _picker = ImagePicker();
 
-    final _image = await _picker.pickImage(source: ImageSource.camera);
-    print(_image!.path);
-    setState(() {
-      imagePath = _image.path;
-      imageName = _image.name;
-    });
+  //   final _image = await _picker.pickImage(source: ImageSource.camera);
+  //   print(_image!.path);
+  //   setState(() {
+  //     imagePath = _image.path;
+  //     imageName = _image.name;
+  //   });
+  // }
+
+  // imageUpload() async {
+  //   final storageRef = FirebaseStorage.instance.ref("products_images");
+
+  //   Reference? imagesRef = storageRef.child(imageName.toString());
+  //   File file = File(imagePath.toString());
+
+  //   await imagesRef.putFile(file).then((p0) async {
+  //     downloadUrl = await imagesRef.getDownloadURL();
+  //     setState(() {});
+  //   }).catchError((onError) {
+  //     print(onError);
+  //   });
+  // }
+  @override
+  void initState() {
+    super.initState();
+    name.text = widget.name;
+    descrption.text = widget.des;
+    price.text = widget.price;
   }
 
-  imageUpload() async {
-    final storageRef = FirebaseStorage.instance.ref("products_images");
-
-    Reference? imagesRef = storageRef.child(imageName.toString());
-    File file = File(imagePath.toString());
-
-    await imagesRef.putFile(file).then((p0) async {
-      downloadUrl = await imagesRef.getDownloadURL();
-      setState(() {});
-    }).catchError((onError) {
-      print(onError);
-    });
-  }
-
-  ProductSaveData() async {
+  ProductUpdateData() async {
     loading = true;
     setState(() {});
-    var uid = DateTime.now().millisecondsSinceEpoch;
-    print(uid);
-    await imageUpload();
+    // var uid = DateTime.now().millisecondsSinceEpoch;
+    // print(uid);
+    // await imageUpload();
     DatabaseReference ref = FirebaseDatabase.instance.ref("products");
 
-    await ref.child(uid.toString()).set({
+    await ref.child(widget.uid).update({
       "name": name.text,
       "description": descrption.text,
       "price": price.text,
-      'product_image': downloadUrl,
-      'uid': uid.toString()
     }).then((value) {
       print('data add');
       loading = false;
@@ -108,25 +119,25 @@ class _AddCardViewState extends State<AddCardView> {
               SizedBox(
                 height: 10,
               ),
-              imagePath == "" || imagePath.toString().isEmpty
-                  ? Text('No image')
-                  : Image.file(
-                      File(imagePath.toString()),
-                      width: 100,
-                    ),
-              ElevatedButton(
-                  onPressed: () {
-                    getImage();
-                  },
-                  child: Text('get image')),
+              // imagePath == "" || imagePath.toString().isEmpty
+              //     ? Text('No image')
+              //     : Image.file(
+              //         File(imagePath.toString()),
+              //         width: 100,
+              //       ),
+              // ElevatedButton(
+              //     onPressed: () {
+              //       getImage();
+              //     },
+              //     child: Text('get image')),
               SizedBox(
                 height: 10,
               ),
               ElevatedButton(
                   onPressed: () {
-                    ProductSaveData();
+                    ProductUpdateData();
                   },
-                  child:loading? CircularProgressIndicator() :Text('submit'))
+                  child: loading ? CircularProgressIndicator() : Text('submit'))
             ],
           ),
         ),
